@@ -79,7 +79,7 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
                                  String injectingSeq, String onErrorSeq, boolean coordination, boolean sequential) {
 
         super(properties, name, synapseEnvironment, injectingSeq, onErrorSeq, coordination, sequential);
-        logger.info("Starting to load the SNMP Inbound Endpoint " + name);
+        logger.info(String.format("Starting to load the SNMP Inbound Endpoint %s", name));
 
         String host = properties.getProperty(SNMPConstants.HOST);
         int port;
@@ -87,15 +87,15 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
         boolean isTCP = Boolean.parseBoolean(properties.getProperty(SNMPConstants.IS_TCP));
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Starting to load the SNMP Properties for " + name);
+            logger.debug(String.format("Starting to load the SNMP Properties for %s", name));
         }
 
         if (StringUtils.isEmpty(host)) {
-            throw new SynapseException("IP address of the SNMP is not set");
+            throw new SynapseException(String.format("IP address of the SNMP is not set for %s ", name));
         }
 
         if (StringUtils.isEmpty(properties.getProperty(SNMPConstants.PORT))) {
-            throw new SynapseException("Port to access the " + host + " is not set");
+            throw new SynapseException(String.format("Port to access the %s is not set for %s ", host , name));
         } else {
             port = Integer.parseInt(properties.getProperty(SNMPConstants.PORT));
         }
@@ -106,9 +106,9 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
             this.verifiedSnmpVersion = SNMPConstants.SNMP_VERSION2C;
         } else {
             if (logger.isDebugEnabled()) {
-                logger.debug("SNMP inbound doesn't support SNMP version other than 2c and 1");
+                logger.debug(SNMPConstants.SNMP_MESSAGE);
             }
-            throw new SynapseException("SNMP connector doesn't support SNMP version other than 1 and 2c");
+            throw new SynapseException(SNMPConstants.SNMP_MESSAGE);
         }
         if (isTCP) {
             listenAddress = GenericAddress.parse(System.getProperty(
@@ -118,9 +118,10 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
                     "snmp4j.listenAddress", "udp:" + host + SNMPConstants.COMBINER + port));
         }
         if (logger.isDebugEnabled()) {
-            logger.debug("Loaded the SNMP Parameters with Host : " + host + " , Port : " + port + " for " + name);
+            logger.debug(String.format("Loaded the SNMP Parameters with Host : %s , Port : %s for %s "
+                    , host, port, name));
         }
-        logger.info("Initialized the SNMP inbound consumer " + name);
+        logger.info(String.format("Initialized the SNMP inbound consumer %s " , name));
     }
 
     /**
@@ -149,8 +150,8 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
             snmp.listen();
             snmp.addCommandResponder(this);
         } catch (IOException e) {
-            throw new SynapseException("Error occurred while creating a transport from the listening address: "
-                    + listenAddress);
+            throw new SynapseException(String.format("Error occurred while creating a transport from the listening " +
+                            "address: %s ", listenAddress));
         }
     }
 
@@ -175,17 +176,17 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
         msgCtx.setProperty("State_Reference", cmdRespEvent.getStateReference());
         msgCtx.setProperty("Tm_State_Reference", cmdRespEvent.getTmStateReference());
         msgCtx.setProperty("Peer_Address", cmdRespEvent.getPeerAddress().toString());
-        msgCtx.setProperty("Message_Dispatcher", cmdRespEvent.getMessageDispatcher());
-        msgCtx.setProperty("Message_Processing_Model", cmdRespEvent.getMessageProcessingModel());
-        msgCtx.setProperty("Message_Is_Processed", cmdRespEvent.isProcessed());
-        msgCtx.setProperty("SNMP_Source", cmdRespEvent.getSource());
+        msgCtx.setProperty("PDU_Dispatcher", cmdRespEvent.getMessageDispatcher());
+        msgCtx.setProperty("PDU_Processing_Model", cmdRespEvent.getMessageProcessingModel());
+        msgCtx.setProperty("PDU_Is_Processed", cmdRespEvent.isProcessed());
+        msgCtx.setProperty("Source", cmdRespEvent.getSource());
         msgCtx.setProperty("PDU_Error_Index", cmdRespEvent.getPDU().getErrorIndex());
         msgCtx.setProperty("PDU_Error_Status", cmdRespEvent.getPDU().getErrorStatus());
         msgCtx.setProperty("PDU_RequestID", cmdRespEvent.getPDU().getRequestID().getValue());
         msgCtx.setProperty("PDU_Error_Status_Text", cmdRespEvent.getPDU().getErrorStatusText());
         msgCtx.setProperty("PDU_NonRepeaters", cmdRespEvent.getPDU().getNonRepeaters());
         msgCtx.setProperty("PDU_BER_Length", cmdRespEvent.getPDU().getBERLength());
-        msgCtx.setProperty("PDU_BER_Pay_loadLength", cmdRespEvent.getPDU().getBERPayloadLength());
+        msgCtx.setProperty("PDU_BER_Payload_Length", cmdRespEvent.getPDU().getBERPayloadLength());
         msgCtx.setProperty("Listen_Address", cmdRespEvent.getTransportMapping().getListenAddress().toString());
         msgCtx.setProperty("Max_Inbound_Message_Size", cmdRespEvent.getTransportMapping().getMaxInboundMessageSize());
         msgCtx.setProperty("PDU_Type", cmdRespEvent.getPDU().getType());
@@ -202,7 +203,7 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
             if (snmp != null) {
                 snmp.close();
                 if (logger.isDebugEnabled()) {
-                    logger.debug("The SNMP connection has been shutdown! for " + name);
+                    logger.debug(String.format("The SNMP connection has been shutdown! for %s", name));
                 }
             }
             if (threadPool != null) {
@@ -223,22 +224,22 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
         AutoCloseInputStream in = new AutoCloseInputStream(new ByteArrayInputStream(strMessage.getBytes()));
         try {
             if (logger.isDebugEnabled()) {
-                logger.debug("Processed Custom inbound EP Message of Content-type : " + SNMPConstants.CONTENT_TYPE
-                        + " for " + name);
+                logger.debug(String.format("Processed Custom inbound EP Message of Content-type : %s for %s "
+                        , SNMPConstants.CONTENT_TYPE, name));
             }
             org.apache.axis2.context.MessageContext axis2MsgCtx = ((Axis2MessageContext) msgCtx)
                     .getAxis2MessageContext();
             Builder builder;
             if (StringUtils.isEmpty(SNMPConstants.CONTENT_TYPE)) {
-                logger.debug("No content type specified. Using SOAP builder for " + name);
+                logger.debug(String.format("No content type specified. Using SOAP builder for %s ", name));
                 builder = new SOAPBuilder();
             } else {
                 String type = SNMPConstants.CONTENT_TYPE;
                 builder = BuilderUtil.getBuilderFromSelector(type, axis2MsgCtx);
                 if (builder == null) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("No message builder found for type " + type + ". Falling back to SOAP."
-                                + name);
+                        logger.debug(String.format("No message builder found for type %s .Falling back to SOAP %s .",
+                                type, name));
                     }
                     builder = new SOAPBuilder();
                 }
@@ -246,14 +247,14 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
             OMElement documentElement = builder.processDocument(in, SNMPConstants.CONTENT_TYPE, axis2MsgCtx);
             msgCtx.setEnvelope(TransportUtils.createSOAPEnvelope(documentElement));
             if (this.injectingSeq == null || "".equals(this.injectingSeq)) {
-                logger.error("Sequence name not specified. Sequence : " + this.injectingSeq);
+                logger.error(String.format("Sequence name not specified. Sequence : %s ", this.injectingSeq));
                 return;
             }
             SequenceMediator seq = (SequenceMediator) this.synapseEnvironment.getSynapseConfiguration()
                     .getSequence(this.injectingSeq);
             if (seq != null) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("injecting message to sequence : " + this.injectingSeq);
+                    logger.debug(String.format("injecting message to sequence : %s ", this.injectingSeq));
                 }
                 seq.setErrorHandler(this.onErrorSeq);
                 if (!seq.isInitialized()) {
@@ -261,7 +262,7 @@ public class SNMPListeningConsumer extends GenericEventBasedConsumer implements 
                 }
                 this.synapseEnvironment.injectInbound(msgCtx, seq, this.sequential);
             } else {
-                logger.error("Sequence: " + this.injectingSeq + " not found " + name);
+                logger.error(String.format("Sequence: %s not found %s ", this.injectingSeq, name));
             }
         } catch (Exception e) {
             throw new SynapseException("Error while processing the SNMP Message ", e);

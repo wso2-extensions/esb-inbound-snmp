@@ -29,4 +29,5 @@ public class SNMPConstants {
     public static final String SNMP_VERSION = "snmpVersion";
     public static final String SNMP_VERSION2C = "2c";
     public static final String SNMP_VERSION1 = "1";
+    public static final String SNMP_MESSAGE = "SNMP inbound doesn't support SNMP version other than 2c and 1";
 }
