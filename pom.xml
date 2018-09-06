@@ -23,7 +23,7 @@
 
     <groupId>org.apache.synapse.inbound.snmp</groupId>
     <artifactId>org.apache.synapse.snmp.listen.class</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>SNMP Listening Consumer</name>
     <url>http://wso2.org</url>
     <packaging>bundle</packaging>
