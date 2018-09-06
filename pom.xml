@@ -23,7 +23,7 @@
 
     <groupId>org.apache.synapse.inbound.snmp</groupId>
     <artifactId>org.apache.synapse.snmp.listen.class</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>SNMP Listening Consumer</name>
     <url>http://wso2.org</url>
     <packaging>bundle</packaging>
@@ -136,15 +136,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${maven.release.plugin.version}</version>
-                    <configuration>
-                        <preparationGoals>clean install</preparationGoals>
-                        <autoVersionSubmodules>true</autoVersionSubmodules>
-                    </configuration>
-                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -206,6 +197,5 @@
         <apache.felix.version>1.7.2</apache.felix.version>
         <snmp4j.version>2.5.11</snmp4j.version>
         <maven.bundle.plugin.version>2.4.0</maven.bundle.plugin.version>
-        <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
     </properties>
 </project>
