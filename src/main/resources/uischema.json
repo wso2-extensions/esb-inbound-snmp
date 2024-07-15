@@ -1,0 +1,65 @@
+{
+  "name": "snmpInbound",
+  "type": "connector",
+  "title": "SNMP Inbound Connector",
+  "help": "Configure the SNMP inbound connector to receive SNMP trap messages based on specified network parameters and version.",
+  "elements": [
+    {
+      "type": "attribute",
+      "value": {
+        "name": "host",
+        "displayName": "Host",
+        "inputType": "string",
+        "required": "true",
+        "helpTip": "The hostname or IP address of the SNMP server."
+      }
+    },
+    {
+      "type": "attribute",
+      "value": {
+        "name": "port",
+        "displayName": "Port",
+        "inputType": "string",
+        "required": "true",
+        "helpTip": "The port number on which the SNMP server is listening."
+      }
+    },
+    {
+      "type": "attribute",
+      "value": {
+        "name": "isTCP",
+        "displayName": "Use TCP",
+        "inputType": "boolean",
+        "defaultValue": "false",
+        "required": "true",
+        "helpTip": "Specify whether to use TCP instead of UDP for SNMP communication."
+      }
+    },
+    {
+      "type": "attribute",
+      "value": {
+        "name": "contentType",
+        "displayName": "Content Type",
+        "inputType": "string",
+        "defaultValue": "text/plain",
+        "required": "false",
+        "helpTip": "The content type of the SNMP message. Default is text/plain."
+      }
+    },
+    {
+      "type": "attribute",
+      "value": {
+        "name": "snmpVersion",
+        "displayName": "SNMP Version",
+        "inputType": "combo",
+        "comboValues": [
+          "1",
+          "2c"
+        ],
+        "defaultValue": "2c",
+        "required": "true",
+        "helpTip": "The version of SNMP used. Only version 1 and 2c are supported."
+      }
+    }
+  ]
+}
