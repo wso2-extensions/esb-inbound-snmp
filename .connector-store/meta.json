@@ -3,8 +3,8 @@
     "owner": "WSO2",
     "category": "Inbound Endpoint",
     "documentationUrl": "https://github.com/wso2-extensions/esb-connector-snmp/blob/1.0.2/README.md",
-    "description": "This inbound supports Simple Network Management Protocol(SNMP) Version 2, and uses the snmp4j library, which is an enterprise class free open source SNMP implementation for Java™ SE.",
-    "status": "Active",
+    "description": "This inbound supports Simple Network Management Protocol(SNMP) Version 2, and uses the snmp4j library, which is an enterprise class free open source SNMP implementation for Java\u2122 SE.",
+    "status": "Inactive",
     "labels": [
         "SNMP",
         "monitoring"
